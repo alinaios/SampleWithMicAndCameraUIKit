@@ -11,32 +11,30 @@ import AVKit
 final class ViewController: UIViewController {
     @IBOutlet private var infoLabel: UILabel!
     @IBOutlet private var micInfoLabel: UILabel!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         detectCameraPermission()
         detectMicPermission()
     }
-
-
+    
+    
     @IBAction private func goToSettings(_ sender: Any) {
         UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
     }
-
+    
     private func detectCameraPermission(){
         if AVCaptureDevice.authorizationStatus(for: .video) == AVAuthorizationStatus.authorized {
             infoLabel.text = "Camera access granted"
         } else {
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
-                    DispatchQueue.main.async {
-                        self?.infoLabel.text = granted ? "Camera access granted" : "Camera access rejected"
-                    }
+                    self?.infoLabel.text = granted ? "Camera access granted" : "Camera access rejected"
                 }
             }
         }
     }
-
+    
     private func detectMicPermission() {
         switch AVAudioSession.sharedInstance().recordPermission {
         case .granted:
